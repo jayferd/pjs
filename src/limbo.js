@@ -1,51 +1,23 @@
-var Limbo = (function(slice, prototype, undefined) {
-  function isObject(o) { return o && typeof o === 'object'; }
-  function isFunction(f) { return f && typeof f === 'function'; }
-  function Limbo(_superclass, definition) {
+var Limbo = (function(prototype, extends, init) {
+  return function(definition) {
     function Noop() {}
 
-    if (definition === undefined) {
-      definition = _superclass;
-      _superclass = Object;
-    }
-    else if (isObject(_superclass[prototype])) {
-      Noop[prototype] = new _superclass;
-    }
+    definitions.new = Noop;
 
-    var proto = Noop[prototype]
-      , _super = _superclass[prototype]
-      , extensions = {}
-    ;
+    var constructor = definition[init] || Noop;
 
-    proto.constructor = Noop;
+    if (definition[extends]) constructor[prototype] = new definition[extends].new;
 
-    if (isFunction(definition)) {
-      extensions = definition.call(Noop, proto, _super, Noop, _superclass);
-    }
-    else if (isObject(definition)) {
-      extensions = definition;
-    }
+    var proto = constructor[prototype];
 
-    if (isObject(extensions)) {
-      for (var ext in extensions) {
-        if (extensions.hasOwnProperty(ext)) {
-          proto[ext] = extensions[ext];
-        }
+    proto.constructor = constructor;
+
+    for (var prop in definition) {
+      if (definition.hasOwnProperty(prop)) {
+        proto[prop] = definitions[prop];
       }
     }
 
-    return Noop;
-  }
-
-  Limbo.create = function create(klass /*, args... */) {
-    var args = slice.call(arguments, 1)
-      , obj = new klass
-    ;
-
-    if (isFunction(obj.init)) obj.init.apply(obj, args);
-
-    return obj;
+    return constructor;
   };
-
-  return Limbo;
-})([].slice, 'prototype');
+})('prototype', 'extends', 'init');
