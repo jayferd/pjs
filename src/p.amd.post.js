@@ -1,1 +1,2 @@
-define('pjs', P);
+return P;
+});
