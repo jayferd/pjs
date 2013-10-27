@@ -1,4 +1,4 @@
-var P = (function(prototype, ownProperty, undefined) {
+var P = (function(prototype, undefined) {
   // helper functions that also help minification
   function isFunction(f) { return typeof f === 'function'; }
 
@@ -45,20 +45,9 @@ var P = (function(prototype, ownProperty, undefined) {
     C.extend = function(def) { return P(C, def); }
 
     return (C.open = function(def) {
-      if (isFunction(def)) {
-        // call the defining function with all the arguments you need
-        // extensions captures the return value.
-        def = def.call(C, proto, _super, C, _superclass);
-      }
-
-      // ...and extend it
-      if (typeof def === 'object') {
-        for (var key in def) {
-          if (ownProperty.call(def, key)) {
-            proto[key] = def[key];
-          }
-        }
-      }
+      // call the defining function with all the arguments you need
+      // extensions captures the return value.
+      def.call(C, proto, _super, C, _superclass);
 
       // if there's no init, we assume we're inheriting a non-pjs class, so
       // we default to applying the superclass's constructor.
@@ -72,4 +61,4 @@ var P = (function(prototype, ownProperty, undefined) {
 
   // as a minifier optimization, we've closured in a few helper functions
   // and the string 'prototype' (C[p] is much shorter than C.prototype)
-})('prototype', ({}).hasOwnProperty);
+})('prototype');

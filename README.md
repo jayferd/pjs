@@ -43,7 +43,7 @@ tom.move()
 
 ## how is pjs different from X
 
-Most class systems for JS let you define classes by passing an object.  P.js lets you pass a function instead, which allows you to closure private methods and macros.  It's also 519 bytes minified (see `make report`).
+Most class systems for JS let you define classes by passing an object.  P.js lets you pass a function instead, which allows you to closure private methods and macros.  It's also &lt;0.5kb minified (`make report`: 427).
 
 ### why doesn't pjs suck?
 
@@ -85,10 +85,6 @@ P(function(proto, super, class, superclass) {
   proto.init = function() {
     myPrivateMethod(this, 1, 2)
   };
-
-  // you can also return an object from this function, which will
-  // be merged into the prototype.
-  return { thing: 3 };
 });
 
 // this defines a class that inherits from MySuperclass
@@ -99,10 +95,6 @@ P(MySuperclass, function(proto, super, class, superclass) {
     super.init.call(this);
   };
 });
-
-// for shorthand, you can pass an object in lieu of the function argument,
-// but you lose the niceness of super and private methods.
-P({ init: function(a) { this.thing = a } });
 
 MyClass = P(function(p) { p.init = function(a, b) { console.log("init!", a, b) }; });
 // instantiate objects by calling the class as a function
@@ -137,15 +129,15 @@ new MyClass.Bare instanceof MyClass // => true
 // you can use `.open` to reopen a class.  This has the same behavior
 // as the regular definitions.
 // note that _super will still be set to the class's prototype
-MyClass = P({ a: 1 });
+MyClass = P(function(proto) { proto.a = 1; });
 var myInst = MyClass();
-MyClass.open(function(proto) { proto.a = 2 });
+MyClass.open(function(proto) { proto.a = 2; });
 myInst.a // => 2
 MyClass.open(function(proto, _super) { /* _super is Object.prototype here */ });
 
 // you can also use `.extend(definition)` to create new subclasses.  This is equivalent
 // to calling P with two arguments.
-var Subclass = MyClass.extend({ a: 3 });
+var Subclass = MyClass.extend(function(proto) { proto.a = 3; });
 ```
 
 ## how do i use pjs in node.js?
