@@ -1,5 +1,5 @@
 var assert = require('assert')
-  , P = require('./../index').P
+  , P = require('../build/p.commonjs').P
 ;
 
 describe('P', function() {
