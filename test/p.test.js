@@ -96,7 +96,7 @@ describe('P', function() {
     IdiomaticClass.prototype.initialized = false;
 
     it('inherits without calling the constructor', function() {
-      var MySubclass = P(IdiomaticClass, {});
+      var MySubclass = P(IdiomaticClass, function(){});
       assert.equal(false, MySubclass.prototype.initialized);
       assert.equal(true, MySubclass().initialized);
     });
@@ -104,10 +104,10 @@ describe('P', function() {
 
   // for coffeescript or es6 subclassing of pjs classes
   describe('idiomatic subclassing of Pjs classes', function() {
-    var MyClass = P({
-      init: function() { this.initCalled = true; },
-      initCalled: false,
-      foo: 3
+    var MyClass = P(function(_) {
+      _.init = function() { this.initCalled = true; };
+      _.initCalled = false;
+      _.foo = 3;
     });
 
     function IdiomaticSubclass() {
@@ -129,7 +129,7 @@ describe('P', function() {
 
   describe('inheriting builtins', function() {
     describe('Error', function() {
-      var MyError = P(Error, {});
+      var MyError = P(Error, function(){});
 
       try {
         throw MyError('o noes');
@@ -140,7 +140,7 @@ describe('P', function() {
     });
 
     describe('RegExp', function() {
-      var MyRegExp = P(RegExp, {})
+      var MyRegExp = P(RegExp, function(){})
         , re = MyRegExp('a(b+)c')
       ;
 
@@ -150,7 +150,7 @@ describe('P', function() {
     });
 
     describe('String', function() {
-      var MyString = P(String, {})
+      var MyString = P(String, function(){})
         , str = MyString('foo')
       ;
 
@@ -160,7 +160,7 @@ describe('P', function() {
     });
 
     describe('Array', function() {
-      var MyArray = P(Array, {})
+      var MyArray = P(Array, function(){})
         , ary = MyArray(1,2,3)
       ;
 
@@ -203,36 +203,31 @@ describe('P', function() {
       P(MyClass, function(a, b, c, d) { sclass = d; });
       assert.equal(MyClass, sclass);
     });
-
-    it('passes the class itself as `this`', function() {
-      var klass;
-      var MyClass = P(function() { klass = this; });
-      assert.equal(MyClass, klass);
-    });
-
   });
 
   describe('open', function() {
-    var C = P();
+    var C = P(function(){});
 
     it('reopens the class, affecting existing instances', function() {
-      C.open({ a: 1 });
+      C.open(function(proto) { proto.a = 1; });
       var inst = C();
-      C.open({ a: 2 });
+      C.open(function(proto) { proto.a = 2; });
 
       assert.equal(inst.a, 2);
     });
   });
 
   describe('extend', function() {
-    var C = P();
+    var C = P(function(){});
     var count = 0;
     it('extends the class', function() {
       var mixin1 = function(proto) {
         proto.foo = 1;
       };
 
-      var mixin2 = { foo: 2 };
+      var mixin2 = function(proto) {
+        proto.foo = 2;
+      };
 
       assert.equal(C().foo, undefined);
 

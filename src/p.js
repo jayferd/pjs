@@ -1,7 +1,4 @@
-var P = (function(prototype, ownProperty, undefined) {
-  // helper functions that also help minification
-  function isFunction(f) { return typeof f === 'function'; }
-
+var P = (function(prototype, undefined) {
   // used to extend the prototypes of superclasses (which might not
   // have `.Bare`s)
   function SuperclassBare() {}
@@ -24,7 +21,7 @@ var P = (function(prototype, ownProperty, undefined) {
     //        have no effect.  Is there a way to override this behavior?
     function C() {
       var self = this instanceof C ? this : new Bare;
-      if (isFunction(self.init)) self.init.apply(self, arguments);
+      self.init.apply(self, arguments);
       return self;
     }
 
@@ -45,26 +42,13 @@ var P = (function(prototype, ownProperty, undefined) {
     C.extend = function(def) { return P(C, def); }
 
     return (C.open = function(def) {
-      if (isFunction(def)) {
-        // call the defining function with all the arguments you need
-        // extensions captures the return value.
-        def = def.call(C, proto, _super, C, _superclass);
-      }
+      // call the defining function with all the arguments you need
+      // extensions captures the return value.
+      def(proto, _super, C, _superclass);
 
-      // ...and extend it
-      if (typeof def === 'object') {
-        for (var key in def) {
-          if (ownProperty.call(def, key)) {
-            proto[key] = def[key];
-          }
-        }
-      }
-
-      // if there's no init, we assume we're inheriting a non-pjs class, so
-      // we default to applying the superclass's constructor.
-      if (!isFunction(proto.init)) {
-        proto.init = _superclass;
-      }
+      // if no init, assume we're inheriting from a non-Pjs class, so
+      // default to using the superclass constructor.
+      proto.init = proto.init || _superclass;
 
       return C;
     })(definition);
@@ -72,4 +56,4 @@ var P = (function(prototype, ownProperty, undefined) {
 
   // as a minifier optimization, we've closured in a few helper functions
   // and the string 'prototype' (C[p] is much shorter than C.prototype)
-})('prototype', ({}).hasOwnProperty);
+})('prototype');
