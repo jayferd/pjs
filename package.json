@@ -6,8 +6,8 @@
   "author": "Jay Adkisson <jjmadkisson at gmail dot com>",
   "repository": "git://github.com/jayferd/pjs",
 
-  "files": ["index.js", "src", "test", "Makefile", "package.json", "README.md", "CHANGELOG.md"],
-  "main": "index.js",
+  "files": ["src", "test", "Makefile", "package.json", "README.md", "CHANGELOG.md"],
+  "main": "./build/p.commonjs",
   "devDependencies": {
     "mocha": "*",
     "uglify-js": "*"
