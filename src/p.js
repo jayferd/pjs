@@ -47,7 +47,7 @@ var P = (function(prototype, undefined) {
     return (C.open = function(def) {
       // call the defining function with all the arguments you need
       // extensions captures the return value.
-      def.call(C, proto, _super, C, _superclass);
+      def(proto, _super, C, _superclass);
 
       // if there's no init, we assume we're inheriting a non-pjs class, so
       // we default to applying the superclass's constructor.

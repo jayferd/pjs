@@ -203,13 +203,6 @@ describe('P', function() {
       P(MyClass, function(a, b, c, d) { sclass = d; });
       assert.equal(MyClass, sclass);
     });
-
-    it('passes the class itself as `this`', function() {
-      var klass;
-      var MyClass = P(function() { klass = this; });
-      assert.equal(MyClass, klass);
-    });
-
   });
 
   describe('open', function() {
