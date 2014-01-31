@@ -62,12 +62,11 @@ var P = (function(prototype, ownProperty, undefined) {
       // extend class methods
       for (var name in _superclass) {
         if (ownProperty.call(_superclass, name) 
+            // don't overwrite already overwritten functions
+            && typeof C[name] !== 'function'
             // only extend functions
             && typeof _superclass[name] === 'function'
-            // don't extend build ins
-            && !name.match(/Bare|extend|open/)
-            // don't overwrite overwritten functions
-            && typeof C[name] !== 'function') {
+        ) {
           C[name] = _superclass[name];
         }
       }
