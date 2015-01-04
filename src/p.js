@@ -6,26 +6,30 @@ var P = (function(prototype, ownProperty, undefined) {
       _superclass = Object;
     }
 
+    var name = 'Bare';
+    if(typeof definition === 'function') {
+        name = definition.name;
+    } else if(definition && definition['__classname__']) {
+        name = definition['__classname__'];
+    }
+
     // C is the class to be returned.
     //
     // When called, creates and initializes an instance of C, unless
     // `this` is already an instance of C, then just initializes `this`;
     // either way, returns the instance of C that was initialized.
     //
-    //  TODO: the Chrome inspector shows all created objects as `C`
-    //        rather than `Object`.  Setting the .name property seems to
-    //        have no effect.  Is there a way to override this behavior?
-    function C() {
-      var self = this instanceof C ? this : new Bare;
-      self.init.apply(self, arguments);
-      return self;
-    }
+    var C = null;
+    eval("C = function "+name+"() {var self = this instanceof C ? this : new Bare;self.init.apply(self, arguments);return self;}");
 
     // C.Bare is a class with a noop constructor.  Its prototype will be
     // the same as C, so that instances of C.Bare are instances of C.
     // `new MyClass.Bare` then creates new instances of C without
     // calling .init().
-    function Bare() {}
+
+    var Bare = null;
+    eval("Bare = function "+name+"(){}");
+
     C.Bare = Bare;
 
     // Extend the prototype chain: first use Bare to create an
