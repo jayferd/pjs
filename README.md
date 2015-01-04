@@ -11,22 +11,22 @@ Okay.
 ``` js
 // adapted from coffeescript.org
 // P.js exposes the `P` variable
-var Animal = P(function(animal) {
+var Animal = P(function Animal(animal) {
   animal.init = function(name) { this.name = name; };
 
   animal.move = function(meters) {
-    console.log(this.name+" moved "+meters+"m.");
+    console.log(this.name+" moved "+meters+"m.",this);
   }
 });
 
-var Snake = P(Animal, function(snake, animal) {
+var Snake = P(Animal, function Snake(snake, animal) {
   snake.move = function() {
     console.log("Slithering...");
     animal.move.call(this, 5);
   };
 });
 
-var Horse = P(Animal, function(horse, animal) {
+var Horse = P(Animal, function Horse(horse, animal) {
   horse.move = function() {
     console.log("Galloping...");
     animal.move.call(this, 45);
@@ -102,9 +102,9 @@ P(MySuperclass, function(proto, super, class, superclass) {
 
 // for shorthand, you can pass an object in lieu of the function argument,
 // but you lose the niceness of super and private methods.
-P({ init: function(a) { this.thing = a } });
+P({ init: function(a) { this.thing = a }, __classname__:'MyClass' });
 
-MyClass = P(function(p) { p.init = function(a, b) { console.log("init!", a, b) }; });
+MyClass = P(function MyClass(p) { p.init = function(a, b) { console.log("init!", a, b) }; });
 // instantiate objects by calling the class as a function
 MyClass(1, 2) // => init!, 1, 2
 
