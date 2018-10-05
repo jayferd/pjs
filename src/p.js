@@ -59,6 +59,18 @@ var P = (function(prototype, ownProperty, undefined) {
         }
       }
 
+      // extend class methods
+      for (var name in _superclass) {
+        if (ownProperty.call(_superclass, name) 
+            // don't overwrite already overwritten functions
+            && typeof C[name] !== 'function'
+            // only extend functions
+            && typeof _superclass[name] === 'function'
+        ) {
+          C[name] = _superclass[name];
+        }
+      }
+
       // if no init, assume we're inheriting from a non-Pjs class, so
       // default to using the superclass constructor.
       if (!('init' in proto)) proto.init = _superclass;

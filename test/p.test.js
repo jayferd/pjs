@@ -67,9 +67,10 @@ describe('P', function() {
 
   describe('inheritance', function() {
     // see examples/ninja.js
-    var Person = P(function(person) {
+    var Person = P(function(person, obj, klass) {
       person.init = function(isDancing) { this.dancing = isDancing };
       person.dance = function() { return this.dancing };
+      klass.party = function(type) { return type + '-Party' };
     });
 
     var Ninja = P(Person, function(ninja, person) {
@@ -85,6 +86,21 @@ describe('P', function() {
 
     it('inherits methods (also super)', function() {
       assert.equal(false, ninja.dance());
+    });
+
+    it('inherits class methods', function() {
+      assert.equal('Slumber-Party', Person.party('Slumber'));
+      assert.equal('Slumber-Party', Ninja.party('Slumber'));
+    });
+
+    it('inherited class methods can be extended', function() {
+      assert.equal('Slumber-Party', Person.party('Slumber'));
+      var Girly = P(Person, function(girly, person, klass, superklass) {
+        klass.party = function() {
+          return superklass.party('Slumber');
+        }
+      });
+      assert.equal('Slumber-Party', Girly.party('DnB'));
     });
   });
 
