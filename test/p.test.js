@@ -254,4 +254,22 @@ describe('P', function() {
       assert.equal(C.extend(mixin1).extend(mixin2)().foo(), 2);
     });
   });
+
+  describe('naming to show in the inspector', function() {
+    //  TODO: how to check Chrome inspector behaviour correctly?
+    it('name from the descriptor function', function() {
+      var C = P(function X() {});
+      assert.equal(C.name, 'X');
+      assert.equal(C.Bare.name, 'X');
+    });
+
+    it('name from the descriptor __classname__ attribute', function() {
+      var C = P({__classname__:'X'});
+      assert.equal(C.name, 'X');
+      assert.equal(C.Bare.name, 'X');
+    });
+
+  });
+
+
 });
